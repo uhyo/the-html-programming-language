@@ -1,0 +1,17 @@
+{
+  "name": "the-html-programming-language",
+  "version": "1.0.0",
+  "description": "The HTML Programming Language",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "html"
+  ],
+  "author": "uhyo <uhyo@uhy.ooo>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.3.0-beta"
+  }
+}
