@@ -29,4 +29,24 @@ export function textExpression(node: Node, text: string): TextExpression {
   };
 }
 
-export type Expression = OutputExpression | TextExpression;
+/**
+ * Expression that concats given expressions as string and return a string.
+ */
+export type ConcatExpression = {
+  type: "ConcatExpression";
+  expressions: Expression[];
+  node: Node;
+};
+
+export function concatExpression(
+  node: Node,
+  expressions: Expression[]
+): ConcatExpression {
+  return {
+    type: "ConcatExpression",
+    expressions,
+    node,
+  };
+}
+
+export type Expression = OutputExpression | TextExpression | ConcatExpression;

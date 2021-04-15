@@ -16,6 +16,13 @@ export async function runExpression(
     case "TextExpression": {
       return expression.text;
     }
+    case "ConcatExpression": {
+      const strings: string[] = [];
+      for (const exp of expression.expressions) {
+        strings.push(String(await runExpression(exp, context)));
+      }
+      return strings.join("");
+    }
     default: {
       assertNever(expression);
     }
