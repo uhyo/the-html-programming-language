@@ -1,6 +1,12 @@
+import { createInterpreter } from "./interpreter/index";
 import { parseProgram } from "./parser/index";
 
-export function runProgram(container: HTMLElement) {
+export async function runProgram(container: HTMLElement) {
   const program = parseProgram(container);
-  console.log(program);
+  console.debug("parsed", program);
+
+  const interpreter = createInterpreter({
+    output: console.log,
+  });
+  await interpreter.run(program);
 }
