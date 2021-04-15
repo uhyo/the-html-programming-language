@@ -4,6 +4,7 @@
   "description": "The HTML Programming Language",
   "main": "index.js",
   "scripts": {
+    "build": "esbuild src/index.ts --bundle --outfile=dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -13,5 +14,8 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^4.3.0-beta"
+  },
+  "dependencies": {
+    "esbuild": "^0.11.11"
   }
 }
