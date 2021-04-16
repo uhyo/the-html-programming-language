@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`program hello_br_world.html 1`] = `
+"Hello,
+world!"
+`;
+
+exports[`program helloworld.html 1`] = `"Hello, world!"`;
