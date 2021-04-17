@@ -6,6 +6,8 @@ exports[`program func-no-arg-return-value.html 1`] = `"hello, world!"`;
 
 exports[`program func-one-arg-return-value.html 1`] = `"Hello, world!"`;
 
+exports[`program func-two-args.html 1`] = `"hello, world!"`;
+
 exports[`program hello_br_world.html 1`] = `
 "Hello,
 world!"
