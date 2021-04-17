@@ -28,11 +28,10 @@ export async function runExpression(
       return strings.join("");
     }
     case "AnchorExpression": {
-      const targetFunc = expectBinding(
-        context.environment,
-        expression.href,
-        expression.node
-      );
+      const targetFunc =
+        typeof expression.href === "string"
+          ? expectBinding(context.environment, expression.href, expression.node)
+          : await runExpression(expression.href, context);
       if (!isFunctionValue(targetFunc)) {
         throwTypeMismatchError("function", targetFunc, expression.node);
       }
@@ -47,6 +46,15 @@ export async function runExpression(
       const value = expectSlot(
         context.environment,
         expression.name,
+        expression.node
+      );
+      return value;
+    }
+    case "VarExpression": {
+      const varName = await runExpression(expression.name, context);
+      const value = expectBinding(
+        context.environment,
+        valueToString(varName),
         expression.node
       );
       return value;

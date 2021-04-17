@@ -5,8 +5,10 @@ import {
   outputExpression,
   slotExpression,
   textExpression,
+  varExpression,
 } from "../ast/expression";
-import { expectAttribute, expectExpression } from "./expect";
+import { SyntaxError } from "../errorObject";
+import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
 import { skipTrivia } from "./skipTrivia";
 import { isElement, isText } from "./util";
@@ -62,16 +64,38 @@ function parseOneExpression(
       }
       case "A": {
         // AnchorExpression
-        const href = expectAttribute(firstChild, "href");
         const parameters = parseExpressionList(
           Array.from(firstChild.childNodes)
         );
+        const href = firstChild.getAttribute("href");
+        if (href === null) {
+          // <a>...</a>: first expression in a is target of function call
+          const [target, ...rest] = parameters;
+          if (target === undefined) {
+            throw new SyntaxError(
+              "Expected at least one expressions as children",
+              firstChild
+            );
+          }
+          return [anchorExpression(firstChild, target, rest), prog.slice(1)];
+        }
+        // <a href="...">
         return [anchorExpression(firstChild, href, parameters), prog.slice(1)];
       }
       case "SLOT": {
         // SlotExpression
         const name = firstChild.getAttribute("name") ?? "0";
         return [slotExpression(firstChild, name), prog.slice(1)];
+      }
+      case "VAR": {
+        // VarExpression
+        const [nameExp, next] = expectExpression(
+          Array.from(firstChild.childNodes),
+          firstChild
+        );
+        expectNothing(next);
+
+        return [varExpression(firstChild, nameExp), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {

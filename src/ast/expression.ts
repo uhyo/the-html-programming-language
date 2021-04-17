@@ -17,14 +17,14 @@ export function outputExpression(
 
 export type AnchorExpression = {
   type: "AnchorExpression";
-  href: string;
+  href: string | Expression;
   parameters: readonly Expression[];
   node: Node;
 };
 
 export function anchorExpression(
   node: Node,
-  href: string,
+  href: string | Expression,
   parameters: readonly Expression[]
 ): AnchorExpression {
   return {
@@ -64,6 +64,23 @@ export function slotExpression(node: Node, name: string): SlotExpression {
 }
 
 /**
+ * Expression that retrieves value of variable
+ */
+export type VarExpression = {
+  type: "VarExpression";
+  name: Expression;
+  node: Node;
+};
+
+export function varExpression(node: Node, name: Expression): VarExpression {
+  return {
+    type: "VarExpression",
+    name,
+    node,
+  };
+}
+
+/**
  * Expression that concats given expressions as string and return a string.
  */
 export type ConcatExpression = {
@@ -88,4 +105,5 @@ export type Expression =
   | AnchorExpression
   | TextExpression
   | SlotExpression
+  | VarExpression
   | ConcatExpression;
