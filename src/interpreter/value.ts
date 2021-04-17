@@ -18,7 +18,26 @@ export function createFunctionValue(
   };
 }
 
-export type Value = string | FunctionValue | null;
+export type NativeFunctionValue = {
+  type: "native-function";
+  body: (...args: readonly Value[]) => Value | Promise<Value>;
+};
+
+export function createNativeFunctionValue(
+  body: (...args: readonly Value[]) => Value | Promise<Value>
+): NativeFunctionValue {
+  return {
+    type: "native-function",
+    body,
+  };
+}
+
+export type Value =
+  | string
+  | number
+  | FunctionValue
+  | NativeFunctionValue
+  | null;
 
 export function isFunctionValue(value: Value): value is FunctionValue {
   return (
@@ -26,7 +45,17 @@ export function isFunctionValue(value: Value): value is FunctionValue {
   );
 }
 
-export function valueToString(value: Value) {
+export function isNativeFunctionValue(
+  value: Value
+): value is NativeFunctionValue {
+  return (
+    value !== null &&
+    typeof value === "object" &&
+    value.type === "native-function"
+  );
+}
+
+export function valueToString(value: Value): string {
   if (typeof value !== "object") {
     return String(value);
   }
@@ -37,6 +66,9 @@ export function valueToString(value: Value) {
   switch (value.type) {
     case "function": {
       return "[Function]";
+    }
+    case "native-function": {
+      return "[Native Function]";
     }
   }
 }

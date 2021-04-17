@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from "fs";
 import path from "path";
+import { RuntimeError, SyntaxError } from "../../errorObject";
 import { createInterpreter } from "../../interpreter/index";
 import { parseProgram } from "../../parser/index";
 
@@ -24,15 +25,41 @@ describe("program", () => {
 
     it(testcaseName, async () => {
       document.body.innerHTML = content;
-      const program = parseProgram(document.body);
       let output = "";
-      const interpreter = createInterpreter({
-        output: (text) => {
-          output += text;
-        },
-      });
-      await interpreter.run(program);
-      expect(output).toMatchSnapshot();
+      let resultError = null;
+      try {
+        const program = parseProgram(document.body);
+        const interpreter = createInterpreter({
+          output: (text) => {
+            output += text;
+          },
+        });
+        await interpreter.run(program);
+      } catch (err) {
+        resultError = err;
+      }
+      if (resultError) {
+        expect(errorSnapshot(resultError)).toMatchSnapshot();
+      } else {
+        expect(output).toMatchSnapshot();
+      }
     });
   }
 });
+
+function errorSnapshot(error: unknown) {
+  if (error instanceof SyntaxError) {
+    return {
+      error: "SyntaxError",
+      message: error.message,
+      node: error.node,
+    };
+  } else if (error instanceof RuntimeError) {
+    return {
+      error: "RuntimeError",
+      message: error.message,
+      node: error.node,
+    };
+  }
+  return error;
+}

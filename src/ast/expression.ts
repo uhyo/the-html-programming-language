@@ -80,6 +80,28 @@ export function varExpression(node: Node, name: Expression): VarExpression {
   };
 }
 
+export type MathBuiltInType = "plus" | "minus";
+
+/**
+ * Expression that represents a built-in math function.
+ */
+export type MathBuiltInExpression = {
+  type: "MathBuiltInExpression";
+  name: MathBuiltInType;
+  node: Node;
+};
+
+export function mathBuiltInExpression(
+  node: Node,
+  name: MathBuiltInType
+): MathBuiltInExpression {
+  return {
+    type: "MathBuiltInExpression",
+    name,
+    node,
+  };
+}
+
 /**
  * Expression that concats given expressions as string and return a string.
  */
@@ -106,4 +128,5 @@ export type Expression =
   | TextExpression
   | SlotExpression
   | VarExpression
+  | MathBuiltInExpression
   | ConcatExpression;

@@ -15,4 +15,6 @@ world!"
 
 exports[`program helloworld.html 1`] = `"Hello, world!"`;
 
+exports[`program math-plus.html 1`] = `"6"`;
+
 exports[`program var-and-a-func.html 1`] = `"Hello, world!"`;

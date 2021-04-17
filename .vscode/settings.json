@@ -1,5 +1,12 @@
 {
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
+  },
+  "[html]": {
+    "editor.suggest.insertMode": "replace",
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "gitlens.codeLens.scopes": [
+      "document"
+    ]
   }
 }

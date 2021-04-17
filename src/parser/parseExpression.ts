@@ -10,6 +10,7 @@ import {
 import { SyntaxError } from "../errorObject";
 import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
+import { parseMathExpression } from "./parseMathExpression";
 import { skipTrivia } from "./skipTrivia";
 import { isElement, isText } from "./util";
 
@@ -96,6 +97,10 @@ function parseOneExpression(
         expectNothing(next);
 
         return [varExpression(firstChild, nameExp), prog.slice(1)];
+      }
+      case "math": {
+        // MathBuiltInExpression
+        return [parseMathExpression(firstChild), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {
