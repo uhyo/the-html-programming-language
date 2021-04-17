@@ -49,6 +49,20 @@ export function textExpression(node: Node, text: string): TextExpression {
   };
 }
 
+export type SlotExpression = {
+  type: "SlotExpression";
+  name: string;
+  node: Node;
+};
+
+export function slotExpression(node: Node, name: string): SlotExpression {
+  return {
+    type: "SlotExpression",
+    name,
+    node,
+  };
+}
+
 /**
  * Expression that concats given expressions as string and return a string.
  */
@@ -73,4 +87,5 @@ export type Expression =
   | OutputExpression
   | AnchorExpression
   | TextExpression
+  | SlotExpression
   | ConcatExpression;

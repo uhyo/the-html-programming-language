@@ -1,8 +1,9 @@
 import { Expression } from "../ast/expression";
 import { assertNever } from "../util/assertNever";
-import { expectBinding } from "./context/environment";
+import { asyncMap } from "../util/asyncMap";
+import { expectBinding, expectSlot } from "./context/environment";
 import { InterpreterContext } from "./context/index";
-import { runBlock } from "./runBlock";
+import { runFunctionBlock } from "./runBlock";
 import { throwTypeMismatchError } from "./runtimeError";
 import { FunctionValue, isFunctionValue, Value, valueToString } from "./value";
 
@@ -42,6 +43,14 @@ export async function runExpression(
       );
       return returnValue;
     }
+    case "SlotExpression": {
+      const value = expectSlot(
+        context.environment,
+        expression.name,
+        expression.node
+      );
+      return value;
+    }
     default: {
       assertNever(expression);
     }
@@ -53,7 +62,10 @@ async function callFunction(
   parameters: readonly Expression[],
   context: InterpreterContext
 ): Promise<Value> {
-  const result = await runBlock(func.body, context);
+  const parameterValues = await asyncMap(parameters, (exp) =>
+    runExpression(exp, context)
+  );
+  const result = await runFunctionBlock(func.body, context, parameterValues);
   switch (result.type) {
     case "normal": {
       return null;

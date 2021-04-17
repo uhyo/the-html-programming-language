@@ -13,27 +13,33 @@ export type RunBlockResult =
       readonly value: Value;
     };
 
-export async function runBlock(
+export function runBlock(
   block: readonly Statement[],
   context: InterpreterContext
 ): Promise<RunBlockResult> {
-  const newEnvironment = enterBlock(block, context.environment);
+  const newEnvironment = enterBlock(block, context.environment, []);
   const newContext = {
     ...context,
     environment: newEnvironment,
   };
-  for (const statement of block) {
-    const res = await runStatement(statement, newContext);
-    if (res.type === "footer") {
-      return {
-        type: "footer",
-        value: res.value,
-      };
-    }
-  }
-  return {
-    type: "normal",
+  return runStatements(block, newContext);
+}
+
+export function runFunctionBlock(
+  block: readonly Statement[],
+  context: InterpreterContext,
+  functionParameters: readonly Value[]
+): Promise<RunBlockResult> {
+  const newEnvironment = enterBlock(
+    block,
+    context.environment,
+    functionParameters
+  );
+  const newContext = {
+    ...context,
+    environment: newEnvironment,
   };
+  return runStatements(block, newContext);
 }
 
 /**
@@ -42,9 +48,10 @@ export async function runBlock(
  */
 function enterBlock(
   block: readonly Statement[],
-  environment: Environment
+  environment: Environment,
+  functionParameters: readonly Value[]
 ): Environment {
-  const newScope = createScope();
+  const newScope = createScope(functionParameters);
   const newEnvironment: Environment = {
     scopes: [...environment.scopes, newScope],
   };
@@ -59,4 +66,22 @@ function enterBlock(
     }
   }
   return newEnvironment;
+}
+
+async function runStatements(
+  statements: readonly Statement[],
+  context: InterpreterContext
+): Promise<RunBlockResult> {
+  for (const statement of statements) {
+    const res = await runStatement(statement, context);
+    if (res.type === "footer") {
+      return {
+        type: "footer",
+        value: res.value,
+      };
+    }
+  }
+  return {
+    type: "normal",
+  };
 }

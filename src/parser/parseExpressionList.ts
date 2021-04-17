@@ -20,7 +20,7 @@ export function parseExpressionList(program: readonly Node[]): Expression[] {
     nodes = next;
     // parse separator
     const first = nodes[0];
-    if (first && isElement(first) && first.tagName === "HR") {
+    if (first && isElement(first) && first.tagName === "BR") {
       nodes = next.slice(1);
     }
   }

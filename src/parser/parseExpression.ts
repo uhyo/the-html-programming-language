@@ -3,6 +3,7 @@ import {
   concatExpression,
   Expression,
   outputExpression,
+  slotExpression,
   textExpression,
 } from "../ast/expression";
 import { expectAttribute, expectExpression } from "./expect";
@@ -47,8 +48,8 @@ function parseOneExpression(
 
   if (isElement(firstChild)) {
     switch (firstChild.tagName) {
-      case "BR": {
-        // Br is treated as a "\n" text
+      case "WBR": {
+        // Wbr is treated as a "\n" text
         return [textExpression(firstChild, "\n"), prog.slice(1)];
       }
       case "OUTPUT": {
@@ -66,6 +67,11 @@ function parseOneExpression(
           Array.from(firstChild.childNodes)
         );
         return [anchorExpression(firstChild, href, parameters), prog.slice(1)];
+      }
+      case "SLOT": {
+        // SlotExpression
+        const name = firstChild.getAttribute("name") ?? "0";
+        return [slotExpression(firstChild, name), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {
