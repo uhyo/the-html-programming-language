@@ -2,10 +2,9 @@ import { Expression } from "../ast/expression";
 import { assertNever } from "../util/assertNever";
 import { expectBinding } from "./context/environment";
 import { InterpreterContext } from "./context/index";
-import { enterBlock } from "./enterBlock";
-import { runStatement } from "./runStatement";
+import { runBlock } from "./runBlock";
 import { throwTypeMismatchError } from "./runtimeError";
-import { FunctionValue, isFunctionValue, Value } from "./value";
+import { FunctionValue, isFunctionValue, Value, valueToString } from "./value";
 
 export async function runExpression(
   expression: Expression,
@@ -14,7 +13,7 @@ export async function runExpression(
   switch (expression.type) {
     case "OutputExpression": {
       const value = await runExpression(expression.expression, context);
-      context.io.output(String(value));
+      context.io.output(valueToString(value));
       return value;
     }
     case "TextExpression": {
@@ -23,7 +22,7 @@ export async function runExpression(
     case "ConcatExpression": {
       const strings: string[] = [];
       for (const exp of expression.expressions) {
-        strings.push(String(await runExpression(exp, context)));
+        strings.push(valueToString(await runExpression(exp, context)));
       }
       return strings.join("");
     }
@@ -36,7 +35,7 @@ export async function runExpression(
       if (!isFunctionValue(targetFunc)) {
         throwTypeMismatchError("function", targetFunc, expression.node);
       }
-      const returnValue = callFunction(
+      const returnValue = await callFunction(
         targetFunc,
         expression.parameters,
         context
@@ -49,18 +48,21 @@ export async function runExpression(
   }
 }
 
-function callFunction(
+async function callFunction(
   func: FunctionValue,
   parameters: readonly Expression[],
   context: InterpreterContext
-): Value {
-  const newEnvironment = enterBlock(func.body, context.environment);
-  const newContext: InterpreterContext = {
-    ...context,
-    environment: newEnvironment,
-  };
-  for (const statement of func.body) {
-    runStatement(statement, newContext);
+): Promise<Value> {
+  const result = await runBlock(func.body, context);
+  switch (result.type) {
+    case "normal": {
+      return null;
+    }
+    case "footer": {
+      return result.value;
+    }
+    default: {
+      assertNever(result);
+    }
   }
-  return null;
 }

@@ -1,5 +1,6 @@
 import {
   expressionStatement,
+  footerStatement,
   sectionDeclaration,
   Statement,
 } from "../ast/statement";
@@ -31,6 +32,15 @@ export function parseStatement(
       );
       expectNothing(next);
       return [expressionStatement(firstChild, exp), prog.slice(1)];
+    }
+    case "FOOTER": {
+      // Footer Statement
+      const [exp, next] = expectExpression(
+        Array.from(firstChild.childNodes),
+        firstChild
+      );
+      expectNothing(next);
+      return [footerStatement(firstChild, exp), prog.slice(1)];
     }
     case "SECTION": {
       // Section Declaration

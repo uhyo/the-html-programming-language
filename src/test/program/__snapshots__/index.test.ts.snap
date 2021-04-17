@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`program func1.html 1`] = `"hello, world!"`;
+exports[`program func-no-arg-no-return-value.html 1`] = `"hello, world!"`;
+
+exports[`program func-no-arg-return-value.html 1`] = `"hello, world!"`;
 
 exports[`program hello_br_world.html 1`] = `
 "Hello,

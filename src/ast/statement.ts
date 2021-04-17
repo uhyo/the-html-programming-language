@@ -17,6 +17,23 @@ export function expressionStatement(
   };
 }
 
+export type FooterStatement = {
+  type: "FooterStatement";
+  expression: Expression;
+  node: Node;
+};
+
+export function footerStatement(
+  node: Node,
+  expression: Expression
+): FooterStatement {
+  return {
+    type: "FooterStatement",
+    expression,
+    node,
+  };
+}
+
 export type SectionDeclaration = {
   type: "SectionDeclaration";
   title: string;
@@ -37,4 +54,7 @@ export function sectionDeclaration(
   };
 }
 
-export type Statement = ExpressionStatement | SectionDeclaration;
+export type Statement =
+  | ExpressionStatement
+  | FooterStatement
+  | SectionDeclaration;
