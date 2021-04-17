@@ -15,6 +15,26 @@ export function outputExpression(
   };
 }
 
+export type AnchorExpression = {
+  type: "AnchorExpression";
+  href: string;
+  parameters: readonly Expression[];
+  node: Node;
+};
+
+export function anchorExpression(
+  node: Node,
+  href: string,
+  parameters: readonly Expression[]
+): AnchorExpression {
+  return {
+    type: "AnchorExpression",
+    href,
+    parameters,
+    node,
+  };
+}
+
 export type TextExpression = {
   type: "TextExpression";
   text: string;
@@ -49,4 +69,8 @@ export function concatExpression(
   };
 }
 
-export type Expression = OutputExpression | TextExpression | ConcatExpression;
+export type Expression =
+  | OutputExpression
+  | AnchorExpression
+  | TextExpression
+  | ConcatExpression;

@@ -1,5 +1,7 @@
 import { Program } from "../ast/index";
-import { InterpreterContext } from "./context";
+import { createEnvironment } from "./context/environment";
+import { InterpreterContext } from "./context/index";
+import { enterBlock } from "./enterBlock";
 import { IO } from "./io";
 import { runStatement } from "./runStatement";
 
@@ -10,7 +12,11 @@ export type Interpreter = {
 export function createInterpreter(io: IO): Interpreter {
   return {
     async run(program) {
-      const context: InterpreterContext = { io };
+      const environment = enterBlock(program.statements, createEnvironment());
+      const context: InterpreterContext = {
+        io,
+        environment,
+      };
       for (const statement of program.statements) {
         await runStatement(statement, context);
       }

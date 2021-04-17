@@ -1,7 +1,11 @@
 import { Expression } from "../ast/expression";
-import { throwExpectError, throwUnexpectedNodeError } from "./error";
 import { parseExpression } from "./parseExpression";
 import { skipTrivia } from "./skipTrivia";
+import {
+  throwExpectAttributeError,
+  throwExpectError,
+  throwUnexpectedNodeError,
+} from "./syntaxError";
 
 export function expectExpression(
   program: readonly Node[],
@@ -22,4 +26,15 @@ export function expectNothing(program: readonly Node[]) {
   if (prog.length > 0) {
     throwUnexpectedNodeError(prog[0]);
   }
+}
+
+/**
+ * Throw a SyntaxError if there is no attribute of given name.
+ */
+export function expectAttribute(element: Element, name: string): string {
+  const attr = element.getAttribute(name);
+  if (attr === null) {
+    throwExpectAttributeError(name, element);
+  }
+  return attr;
 }

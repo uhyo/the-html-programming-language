@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --outfile=dist/index.js",
+    "watch:tsc": "tsc --watch",
     "test": "jest"
   },
   "keywords": [

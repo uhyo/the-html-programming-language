@@ -1,10 +1,12 @@
 import {
+  anchorExpression,
   concatExpression,
   Expression,
   outputExpression,
   textExpression,
 } from "../ast/expression";
-import { expectExpression } from "./expect";
+import { expectAttribute, expectExpression } from "./expect";
+import { parseExpressionList } from "./parseExpressionList";
 import { skipTrivia } from "./skipTrivia";
 import { isElement, isText } from "./util";
 
@@ -56,6 +58,14 @@ function parseOneExpression(
           firstChild
         );
         return [outputExpression(firstChild, exp), next];
+      }
+      case "A": {
+        // AnchorExpression
+        const href = expectAttribute(firstChild, "href");
+        const parameters = parseExpressionList(
+          Array.from(firstChild.childNodes)
+        );
+        return [anchorExpression(firstChild, href, parameters), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {

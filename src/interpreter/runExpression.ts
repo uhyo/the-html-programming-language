@@ -1,7 +1,11 @@
 import { Expression } from "../ast/expression";
 import { assertNever } from "../util/assertNever";
-import { InterpreterContext } from "./context";
-import { Value } from "./value";
+import { expectBinding } from "./context/environment";
+import { InterpreterContext } from "./context/index";
+import { enterBlock } from "./enterBlock";
+import { runStatement } from "./runStatement";
+import { throwTypeMismatchError } from "./runtimeError";
+import { FunctionValue, isFunctionValue, Value } from "./value";
 
 export async function runExpression(
   expression: Expression,
@@ -23,8 +27,40 @@ export async function runExpression(
       }
       return strings.join("");
     }
+    case "AnchorExpression": {
+      const targetFunc = expectBinding(
+        context.environment,
+        expression.href,
+        expression.node
+      );
+      if (!isFunctionValue(targetFunc)) {
+        throwTypeMismatchError("function", targetFunc, expression.node);
+      }
+      const returnValue = callFunction(
+        targetFunc,
+        expression.parameters,
+        context
+      );
+      return returnValue;
+    }
     default: {
       assertNever(expression);
     }
   }
+}
+
+function callFunction(
+  func: FunctionValue,
+  parameters: readonly Expression[],
+  context: InterpreterContext
+): Value {
+  const newEnvironment = enterBlock(func.body, context.environment);
+  const newContext: InterpreterContext = {
+    ...context,
+    environment: newEnvironment,
+  };
+  for (const statement of func.body) {
+    runStatement(statement, newContext);
+  }
+  return null;
 }

@@ -1,5 +1,6 @@
 import { Statement } from "../ast/statement";
-import { InterpreterContext } from "./context";
+import { assertNever } from "../util/assertNever";
+import { InterpreterContext } from "./context/index";
 import { runExpression } from "./runExpression";
 
 export async function runStatement(
@@ -11,8 +12,11 @@ export async function runStatement(
       await runExpression(statement.expression, context);
       return;
     }
+    case "SectionDeclaration": {
+      return;
+    }
     default: {
-      // assertNever(statement);
+      assertNever(statement);
     }
   }
 }

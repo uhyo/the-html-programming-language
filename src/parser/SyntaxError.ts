@@ -1,7 +1,19 @@
-export class SyntaxError extends Error {
-  readonly node: Node;
-  constructor(message: string, node: Node) {
-    super(message);
-    this.node = node;
-  }
+import { SyntaxError } from "../errorObject";
+
+export function throwUnexpectedNodeError(node: Node): never {
+  throw new SyntaxError("Unexpected node", node);
+}
+
+export function throwExpectError(expectedThing: string, node: Node): never {
+  throw new SyntaxError(`Expected ${expectedThing}.`, node);
+}
+
+export function throwExpectAttributeError(
+  expectedAttribute: string,
+  node: Node
+): never {
+  throw new SyntaxError(
+    `Expected an attribute '${expectedAttribute}' to exist.`,
+    node
+  );
 }

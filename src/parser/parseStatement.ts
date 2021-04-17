@@ -1,7 +1,12 @@
-import { expressionStatement, Statement } from "../ast/statement";
-import { throwUnexpectedNodeError } from "./error";
-import { expectExpression, expectNothing } from "./expect";
+import {
+  expressionStatement,
+  sectionDeclaration,
+  Statement,
+} from "../ast/statement";
+import { expectAttribute, expectExpression, expectNothing } from "./expect";
+import { parseStatementList } from "./parseStatementList";
 import { skipTrivia } from "./skipTrivia";
+import { throwUnexpectedNodeError } from "./syntaxError";
 import { isElement } from "./util";
 
 export function parseStatement(
@@ -25,7 +30,13 @@ export function parseStatement(
         firstChild
       );
       expectNothing(next);
-      return [expressionStatement(exp), prog.slice(1)];
+      return [expressionStatement(firstChild, exp), prog.slice(1)];
+    }
+    case "SECTION": {
+      // Section Declaration
+      const title = expectAttribute(firstChild, "title");
+      const body = parseStatementList(Array.from(firstChild.childNodes));
+      return [sectionDeclaration(firstChild, title, body), prog.slice(1)];
     }
   }
 
