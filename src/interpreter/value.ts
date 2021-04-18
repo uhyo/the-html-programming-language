@@ -20,11 +20,11 @@ export function createFunctionValue(
 
 export type NativeFunctionValue = {
   type: "native-function";
-  body: (...args: readonly Value[]) => Value | Promise<Value>;
+  body: (args: readonly Value[], node: Node) => Value | Promise<Value>;
 };
 
 export function createNativeFunctionValue(
-  body: (...args: readonly Value[]) => Value | Promise<Value>
+  body: (args: readonly Value[], node: Node) => Value | Promise<Value>
 ): NativeFunctionValue {
   return {
     type: "native-function",

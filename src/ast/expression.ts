@@ -80,7 +80,16 @@ export function varExpression(node: Node, name: Expression): VarExpression {
   };
 }
 
-export type MathBuiltInType = "plus" | "minus";
+export type MathBuiltInType =
+  | "plus"
+  | "minus"
+  | "times"
+  | "divide"
+  | "rem"
+  | "power"
+  | "gcd"
+  | "min"
+  | "max";
 
 /**
  * Expression that represents a built-in math function.

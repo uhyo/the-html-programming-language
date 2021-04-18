@@ -51,7 +51,10 @@ export async function runExpression(
         return returnValue;
       }
       if (isNativeFunctionValue(targetFunc)) {
-        const returnValue = await targetFunc.body(...parameterValues);
+        const returnValue = await targetFunc.body(
+          parameterValues,
+          expression.node
+        );
         return returnValue;
       }
       throwTypeMismatchError("function", targetFunc, expression.node);

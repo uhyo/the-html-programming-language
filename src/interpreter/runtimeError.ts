@@ -19,3 +19,13 @@ export function throwTypeMismatchError(
     node
   );
 }
+
+export function throwExpectedParameterNumberError(
+  number: number,
+  node: Node
+): never {
+  throw new RuntimeError(
+    `Expected at least ${number} argument${number > 1 ? "s" : ""}.`,
+    node
+  );
+}
