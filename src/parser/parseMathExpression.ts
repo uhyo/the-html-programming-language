@@ -26,6 +26,13 @@ export function parseMathExpression(element: Element): MathBuiltInExpression {
 const builtInSet: ReadonlySet<string> = new Set<MathBuiltInType>([
   "plus",
   "minus",
+  "times",
+  "divide",
+  "rem",
+  "power",
+  "gcd",
+  "min",
+  "max",
 ]);
 
 function isMathBuiltInType(value: string): value is MathBuiltInType {
