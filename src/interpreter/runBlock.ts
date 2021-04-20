@@ -1,5 +1,5 @@
 import { Statement } from "../ast/statement";
-import { createScope, Environment } from "./context/environment";
+import { createBinding, createScope, Environment } from "./context/environment";
 import { InterpreterContext } from "./context/index";
 import { runStatement } from "./runStatement";
 import { createFunctionValue, Value } from "./value";
@@ -60,7 +60,7 @@ function enterBlock(
     switch (statement.type) {
       case "SectionDeclaration": {
         const func = createFunctionValue(newEnvironment, statement.body);
-        newScope.bindings.set(statement.title, func);
+        createBinding(newEnvironment, statement.title, func, statement.node);
         break;
       }
     }

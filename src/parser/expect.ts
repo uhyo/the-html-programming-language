@@ -6,6 +6,7 @@ import {
   throwExpectError,
   throwUnexpectedNodeError,
 } from "./syntaxError";
+import { hasElement } from "./util";
 
 export function expectExpression(
   program: readonly Node[],
@@ -23,7 +24,7 @@ export function expectExpression(
  */
 export function expectNothing(program: readonly Node[]) {
   const prog = skipTrivia(program);
-  if (prog.length > 0) {
+  if (hasElement(prog)) {
     throwUnexpectedNodeError(prog[0]);
   }
 }

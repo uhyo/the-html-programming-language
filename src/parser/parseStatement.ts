@@ -1,13 +1,16 @@
+import { Expression } from "../ast/expression";
 import {
+  definitionListStatement,
   expressionStatement,
   footerStatement,
   sectionDeclaration,
   Statement,
 } from "../ast/statement";
 import { expectAttribute, expectExpression, expectNothing } from "./expect";
+import { parseExpression } from "./parseExpression";
 import { parseStatementList } from "./parseStatementList";
 import { skipTrivia } from "./skipTrivia";
-import { throwUnexpectedNodeError } from "./syntaxError";
+import { throwExpectError, throwUnexpectedNodeError } from "./syntaxError";
 import { isElement } from "./util";
 
 export function parseStatement(
@@ -41,6 +44,43 @@ export function parseStatement(
       );
       expectNothing(next);
       return [footerStatement(firstChild, exp), prog.slice(1)];
+    }
+    case "DL": {
+      // DeclarationList Statement
+      let nodes: readonly Node[] = skipTrivia(
+        Array.from(firstChild.childNodes)
+      );
+      const definitions: {
+        name: Expression;
+        value: Expression;
+      }[] = [];
+      // parse dt-dd pairs
+      while (nodes.length > 0) {
+        const [dt, ...rest1] = nodes;
+        if (dt === undefined || !isElement(dt) || dt.tagName !== "DT") {
+          throwExpectError("a dt element", dt ?? firstChild);
+        }
+        const [dtExp, dtRest] =
+          parseExpression(Array.from(dt.childNodes)) ||
+          throwExpectError("an element", dt);
+        expectNothing(dtRest);
+
+        const [dd, ...rest2] = skipTrivia(rest1);
+        if (dd === undefined || !isElement(dd) || dd.tagName !== "DD") {
+          throwExpectError("a dd element", dd ?? firstChild);
+        }
+        const [ddExp, ddRest] =
+          parseExpression(Array.from(dd.childNodes)) ||
+          throwExpectError("an element", dd);
+        expectNothing(ddRest);
+
+        definitions.push({
+          name: dtExp,
+          value: ddExp,
+        });
+        nodes = skipTrivia(rest2);
+      }
+      return [definitionListStatement(firstChild, definitions), prog.slice(1)];
     }
     case "SECTION": {
       // Section Declaration

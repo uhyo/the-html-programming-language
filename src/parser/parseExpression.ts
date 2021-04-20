@@ -35,9 +35,9 @@ export function parseExpression(
     nodes = rest;
   }
   if (seq.length === 1) {
-    return [seq[0], rest];
+    return [expression1, rest];
   }
-  return [concatExpression(seq[0].node, seq), nodes];
+  return [concatExpression(expression1.node, seq), nodes];
 }
 
 function parseOneExpression(

@@ -1,4 +1,5 @@
 import { MathBuiltInType } from "../../../ast/expression";
+import { hasElement, hasNElement } from "../../../parser/util";
 import { throwExpectedParameterNumberError } from "../../runtimeError";
 import {
   createNativeFunctionValue,
@@ -30,7 +31,7 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
     return result;
   }),
   minus: createNativeFunctionValue((args: readonly Value[]) => {
-    if (args.length === 0) {
+    if (!hasElement(args)) {
       return 0;
     }
     let result = valueToNumber(args[0]);
@@ -47,7 +48,7 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
     return result;
   }),
   divide: createNativeFunctionValue((args: readonly Value[]) => {
-    if (args.length === 0) {
+    if (!hasElement(args)) {
       return 1;
     }
     let result = valueToNumber(args[0]);
@@ -57,7 +58,7 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
     return result;
   }),
   power: createNativeFunctionValue((args: readonly Value[]) => {
-    if (args.length === 0) {
+    if (!hasElement(args)) {
       return 1;
     }
     let result = valueToNumber(args[0]);
@@ -67,13 +68,13 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
     return result;
   }),
   rem: createNativeFunctionValue((args, node) => {
-    if (args.length < 2) {
+    if (!hasNElement(2, args)) {
       throwExpectedParameterNumberError(2, node);
     }
     return valueToNumber(args[0]) % valueToNumber(args[1]);
   }),
   gcd: createNativeFunctionValue((args) => {
-    if (args.length === 0) {
+    if (!hasElement(args)) {
       return 1;
     }
 

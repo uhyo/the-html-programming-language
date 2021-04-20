@@ -1,8 +1,9 @@
 import { Statement } from "../ast/statement";
 import { assertNever } from "../util/assertNever";
+import { createBinding } from "./context/environment";
 import { InterpreterContext } from "./context/index";
 import { runExpression } from "./runExpression";
-import { Value } from "./value";
+import { Value, valueToString } from "./value";
 
 export type RunStatementResult =
   | {
@@ -32,6 +33,14 @@ export async function runStatement(
         type: "footer",
         value,
       };
+    }
+    case "DefinitionListStatement": {
+      for (const { name, value } of statement.definitions) {
+        const namev = valueToString(await runExpression(name, context));
+        const valuev = await runExpression(value, context);
+        createBinding(context.environment, namev, valuev, statement.node);
+      }
+      return normalResult;
     }
     case "SectionDeclaration": {
       return normalResult;

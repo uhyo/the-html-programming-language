@@ -34,6 +34,29 @@ export function footerStatement(
   };
 }
 
+export type DefinitionListStatement = {
+  type: "DefinitionListStatement";
+  definitions: {
+    name: Expression;
+    value: Expression;
+  }[];
+  node: Node;
+};
+
+export function definitionListStatement(
+  node: Node,
+  definitions: {
+    name: Expression;
+    value: Expression;
+  }[]
+): DefinitionListStatement {
+  return {
+    type: "DefinitionListStatement",
+    definitions,
+    node,
+  };
+}
+
 export type SectionDeclaration = {
   type: "SectionDeclaration";
   title: string;
@@ -57,4 +80,5 @@ export function sectionDeclaration(
 export type Statement =
   | ExpressionStatement
   | FooterStatement
+  | DefinitionListStatement
   | SectionDeclaration;

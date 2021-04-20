@@ -20,7 +20,7 @@ describe("program", () => {
     let match;
     while ((match = content.match(/^\/\/(.*)\n/))) {
       input += match[1] + "\n";
-      content = content.slice(match[0].length);
+      content = content.slice(match[0]!.length);
     }
 
     it(testcaseName, async () => {

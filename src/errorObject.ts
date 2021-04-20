@@ -13,3 +13,6 @@ export class RuntimeError extends Error {
     this.node = node;
   }
 }
+
+// Runtime error that should not happen
+export class InternalError extends RuntimeError {}

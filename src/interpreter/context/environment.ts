@@ -1,3 +1,4 @@
+import { InternalError } from "../../errorObject";
 import {
   throwSlotNotFoundError,
   throwVariableNotFoundError,
@@ -32,7 +33,7 @@ export function lookupBinding(
 ): Value | undefined {
   const { scopes } = environment;
   for (let i = scopes.length - 1; i >= 0; i--) {
-    const res = scopes[i].bindings.get(name);
+    const res = scopes[i]?.bindings.get(name);
     if (res !== undefined) {
       return res;
     }
@@ -50,6 +51,22 @@ export function expectBinding(
     throwVariableNotFoundError(name, node);
   }
   return res;
+}
+
+/**
+ * Create a binding on the innermost scope.
+ */
+export function createBinding(
+  environment: Environment,
+  name: string,
+  value: Value,
+  node: Node
+): void {
+  const scope = environment.scopes[environment.scopes.length - 1];
+  if (!scope) {
+    throw new InternalError("No scope", node);
+  }
+  scope.bindings.set(name, value);
 }
 
 export function lookupSlot(
