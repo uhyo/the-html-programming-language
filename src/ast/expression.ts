@@ -111,6 +111,26 @@ export function mathBuiltInExpression(
   };
 }
 
+export type InputExpression = {
+  type: "InputExpression";
+  name?: string;
+  pattern?: string;
+  node: Node;
+};
+
+export function inputExpression(
+  node: Node,
+  name: string | undefined,
+  pattern: string | undefined
+): InputExpression {
+  return {
+    type: "InputExpression",
+    name,
+    pattern,
+    node,
+  };
+}
+
 /**
  * Expression that concats given expressions as string and return a string.
  */
@@ -138,4 +158,5 @@ export type Expression =
   | SlotExpression
   | VarExpression
   | MathBuiltInExpression
+  | InputExpression
   | ConcatExpression;

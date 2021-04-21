@@ -69,6 +69,26 @@ export function createBinding(
   scope.bindings.set(name, value);
 }
 
+/**
+ * Update existing binding.
+ */
+export function updateBinding(
+  environment: Environment,
+  name: string,
+  value: Value,
+  node: Node
+): void {
+  const { scopes } = environment;
+  for (let i = scopes.length - 1; i >= 0; i--) {
+    const s = scopes[i];
+    if (s?.bindings.has(name)) {
+      s.bindings.set(name, value);
+      return;
+    }
+  }
+  throw new InternalError(`No binding of name '${name}'`, node);
+}
+
 export function lookupSlot(
   environment: Environment,
   name: string

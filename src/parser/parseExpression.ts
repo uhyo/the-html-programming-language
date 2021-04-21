@@ -2,6 +2,7 @@ import {
   anchorExpression,
   concatExpression,
   Expression,
+  inputExpression,
   outputExpression,
   slotExpression,
   textExpression,
@@ -12,6 +13,7 @@ import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
 import { parseMathExpression } from "./parseMathExpression";
 import { skipTrivia } from "./skipTrivia";
+import { throwUnexpectedNodeError } from "./syntaxError";
 import { isElement, isText } from "./util";
 
 export function parseExpression(
@@ -101,6 +103,16 @@ function parseOneExpression(
       case "math": {
         // MathBuiltInExpression
         return [parseMathExpression(firstChild), prog.slice(1)];
+      }
+      case "INPUT": {
+        // InputExpression
+        const type = firstChild.getAttribute("type");
+        if (type !== null && type !== "text") {
+          throwUnexpectedNodeError(firstChild);
+        }
+        const name = firstChild.getAttribute("name") ?? undefined;
+        const pattern = firstChild.getAttribute("pattern") ?? undefined;
+        return [inputExpression(firstChild, name, pattern), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {

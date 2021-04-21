@@ -1,8 +1,13 @@
 import { Expression } from "../ast/expression";
+import { hasElement } from "../parser/util";
 import { assertNever } from "../util/assertNever";
 import { asyncMap } from "../util/asyncMap";
 import { mathBuiltIns } from "./context/builtIn/math";
-import { expectBinding, expectSlot } from "./context/environment";
+import {
+  expectBinding,
+  expectSlot,
+  updateBinding,
+} from "./context/environment";
 import { InterpreterContext } from "./context/index";
 import { runFunctionBlock } from "./runBlock";
 import { throwTypeMismatchError } from "./runtimeError";
@@ -78,6 +83,35 @@ export async function runExpression(
     }
     case "MathBuiltInExpression": {
       return mathBuiltIns[expression.name];
+    }
+    case "InputExpression": {
+      const targetValue =
+        expression.name !== undefined
+          ? valueToString(
+              expectBinding(
+                context.environment,
+                expression.name,
+                expression.node
+              )
+            )
+          : "";
+      const regexp = new RegExp("^" + (expression.pattern ?? ".*\\n"), "u");
+      const match: string[] | null = regexp.exec(targetValue);
+      if (match === null || !hasElement(match)) {
+        return null;
+      }
+      const returnValue = match[1] ?? match[0];
+      if (expression.name !== undefined) {
+        updateBinding(
+          context.environment,
+          expression.name,
+          targetValue.slice(match[0].length),
+          expression.node
+        );
+      } else {
+        // TODO
+      }
+      return returnValue;
     }
     default: {
       assertNever(expression);
