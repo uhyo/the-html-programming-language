@@ -8,5 +8,6 @@
     "gitlens.codeLens.scopes": [
       "document"
     ]
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

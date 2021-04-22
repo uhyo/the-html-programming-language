@@ -29,3 +29,7 @@ export function throwExpectedParameterNumberError(
     node
   );
 }
+
+export function throwUnexpectedEndOfInputError(node: Node): never {
+  throw new RuntimeError("Unexpected end of input.", node);
+}

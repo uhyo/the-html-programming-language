@@ -19,6 +19,8 @@ exports[`program helloworld.html 1`] = `"Hello, world!"`;
 
 exports[`program input-from-var.html 1`] = `"1368"`;
 
+exports[`program input-reverse.html 1`] = `"hello, world!"`;
+
 exports[`program math-many.html 1`] = `
 "minus
 8

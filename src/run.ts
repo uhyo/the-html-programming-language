@@ -6,6 +6,7 @@ export async function runProgram(container: HTMLElement) {
   console.debug("parsed", program);
 
   const interpreter = createInterpreter({
+    input: async () => undefined,
     output: console.log,
   });
   await interpreter.run(program);

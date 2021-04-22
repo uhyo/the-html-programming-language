@@ -10,7 +10,10 @@ import {
 } from "./context/environment";
 import { InterpreterContext } from "./context/index";
 import { runFunctionBlock } from "./runBlock";
-import { throwTypeMismatchError } from "./runtimeError";
+import {
+  throwTypeMismatchError,
+  throwUnexpectedEndOfInputError,
+} from "./runtimeError";
 import {
   FunctionValue,
   isFunctionValue,
@@ -85,33 +88,32 @@ export async function runExpression(
       return mathBuiltIns[expression.name];
     }
     case "InputExpression": {
-      const targetValue =
-        expression.name !== undefined
-          ? valueToString(
-              expectBinding(
-                context.environment,
-                expression.name,
-                expression.node
-              )
-            )
-          : "";
       const regexp = new RegExp("^" + (expression.pattern ?? ".*\\n"), "u");
-      const match: string[] | null = regexp.exec(targetValue);
-      if (match === null || !hasElement(match)) {
-        return null;
-      }
-      const returnValue = match[1] ?? match[0];
-      if (expression.name !== undefined) {
+      if (expression.name === undefined) {
+        const match = await context.input.get(regexp);
+        if (match === undefined) {
+          throwUnexpectedEndOfInputError(expression.node);
+        }
+
+        return match[1] ?? match[0] ?? null;
+      } else {
+        // input from variable
+        const targetValue = valueToString(
+          expectBinding(context.environment, expression.name, expression.node)
+        );
+        const match: string[] | null = regexp.exec(targetValue);
+        if (match === null || !hasElement(match)) {
+          return null;
+        }
+        const returnValue = match[1] ?? match[0];
         updateBinding(
           context.environment,
           expression.name,
           targetValue.slice(match[0].length),
           expression.node
         );
-      } else {
-        // TODO
+        return returnValue;
       }
-      return returnValue;
     }
     default: {
       assertNever(expression);

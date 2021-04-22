@@ -23,6 +23,7 @@ describe("program", () => {
       content = content.slice(match[0]!.length);
     }
 
+    let usedInput: string | undefined = input;
     it(testcaseName, async () => {
       document.body.innerHTML = content;
       let output = "";
@@ -30,6 +31,11 @@ describe("program", () => {
       try {
         const program = parseProgram(document.body);
         const interpreter = createInterpreter({
+          input: async () => {
+            const r = usedInput;
+            usedInput = undefined;
+            return r;
+          },
           output: (text) => {
             output += text;
           },
