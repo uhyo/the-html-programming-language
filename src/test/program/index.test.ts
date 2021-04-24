@@ -13,7 +13,9 @@ describe("program", () => {
     if (!filePath.endsWith(".html")) {
       continue;
     }
-    const testcaseName = path.basename(filePath);
+    const testcaseName = path
+      .basename(filePath)
+      .replace(/\.(?:skip|only)(?=\.html)/g, "");
     let content = readFileSync(filePath, "utf8").trim();
     // treat initial `//` lines as input
     let input = "";
@@ -24,7 +26,7 @@ describe("program", () => {
     }
 
     let usedInput: string | undefined = input;
-    it(testcaseName, async () => {
+    const testFunc = async () => {
       document.body.innerHTML = content;
       let output = "";
       let resultError = null;
@@ -49,7 +51,14 @@ describe("program", () => {
       } else {
         expect(output).toMatchSnapshot();
       }
-    });
+    };
+    if (filePath.endsWith(".skip.html")) {
+      it.skip(testcaseName, testFunc);
+    } else if (filePath.endsWith(".only.html")) {
+      it.only(testcaseName, testFunc);
+    } else {
+      it(testcaseName, testFunc);
+    }
   }
 });
 

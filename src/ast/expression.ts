@@ -15,21 +15,21 @@ export function outputExpression(
   };
 }
 
-export type AnchorExpression = {
-  type: "AnchorExpression";
-  href: string | Expression;
+export type AbbrExpression = {
+  type: "AbbrExpression";
+  title: string | Expression;
   parameters: readonly Expression[];
   node: Node;
 };
 
-export function anchorExpression(
+export function abbrExpression(
   node: Node,
-  href: string | Expression,
+  title: string | Expression,
   parameters: readonly Expression[]
-): AnchorExpression {
+): AbbrExpression {
   return {
-    type: "AnchorExpression",
-    href,
+    type: "AbbrExpression",
+    title,
     parameters,
     node,
   };
@@ -89,7 +89,19 @@ export type MathBuiltInType =
   | "power"
   | "gcd"
   | "min"
-  | "max";
+  | "max"
+  // relations
+  | "eq"
+  | "neq"
+  | "lt"
+  | "gt"
+  | "leq"
+  | "geq"
+  // logical
+  | "and"
+  | "or"
+  | "xor"
+  | "implies";
 
 /**
  * Expression that represents a built-in math function.
@@ -180,6 +192,23 @@ export function spanExpression(
   };
 }
 
+export type MeterExpression = {
+  type: "MeterExpression";
+  expression: Expression;
+  node: Node;
+};
+
+export function meterExpression(
+  node: Node,
+  expression: Expression
+): MeterExpression {
+  return {
+    type: "MeterExpression",
+    expression,
+    node,
+  };
+}
+
 /**
  * Expression that concats given expressions as string and return a string.
  */
@@ -202,7 +231,7 @@ export function concatExpression(
 
 export type Expression =
   | OutputExpression
-  | AnchorExpression
+  | AbbrExpression
   | TextExpression
   | SlotExpression
   | VarExpression
@@ -210,4 +239,5 @@ export type Expression =
   | InputExpression
   | RubyExpression
   | SpanExpression
+  | MeterExpression
   | ConcatExpression;

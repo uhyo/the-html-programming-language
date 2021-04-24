@@ -73,6 +73,17 @@ export function valueToString(value: Value): string {
   }
 }
 
+export function valueToNumber(value: Value): number {
+  if (typeof value === "number") {
+    return value;
+  }
+  return parseInt(valueToString(value).trim(), 10);
+}
+
+export function valueToBoolean(value: Value): boolean {
+  return !!value;
+}
+
 export function valueEquality(left: Value, right: Value): boolean {
   if (
     typeof left !== "object" ||

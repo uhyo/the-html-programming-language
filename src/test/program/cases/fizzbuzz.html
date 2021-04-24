@@ -1,0 +1,62 @@
+<section title="fizzbuzz">
+  <dl>
+    <dt>rem3</dt>
+    <dd>
+      <abbr>
+        <math><rem /></math><br />
+        <slot></slot><br />3
+      </abbr>
+    </dd>
+    <dt>rem5</dt>
+    <dd>
+      <abbr>
+        <math><rem /></math><br />
+        <slot></slot><br />5
+      </abbr>
+    </dd>
+    <dt>text</dt>
+    <dd>
+      <abbr>
+        <math><plus /></math><br />
+        <abbr>
+          <math><times /></math><br />
+          <abbr>
+            <math><eq /></math><br /><var>rem5</var><br /><meter>0</meter></abbr
+          ><br /><meter>2</meter></abbr
+        ><br /><abbr>
+          <math><eq /></math><br /><var>rem3</var><br /><meter>0</meter>
+        </abbr>
+      </abbr>
+      <ruby>
+        <meter>0</meter>
+        <rt><slot></slot></rt>
+        <meter>1</meter>
+        <rt>Fizz</rt>
+        <meter>2</meter>
+        <rt>Buzz</rt>
+        <meter>3</meter>
+        <rt>FizzBuzz</rt>
+      </ruby>
+    </dd>
+  </dl>
+  <p>
+    <output><var>text</var><wbr /></output>
+  </p>
+  <footer>
+    <slot></slot>
+    <ruby>
+      <meter>100</meter>
+      <rt><span></span></rt>
+      <rt
+        ><abbr title="fizzbuzz">
+          <abbr
+            ><math><plus /></math><br /><slot></slot><br />1</abbr
+          >
+        </abbr></rt
+      >
+    </ruby>
+  </footer>
+</section>
+<p>
+  <abbr title="fizzbuzz"><meter>1</meter></abbr>
+</p>

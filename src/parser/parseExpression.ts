@@ -1,8 +1,9 @@
 import {
-  anchorExpression,
+  abbrExpression,
   concatExpression,
   Expression,
   inputExpression,
+  meterExpression,
   outputExpression,
   RubyExpression,
   rubyExpression,
@@ -76,16 +77,16 @@ function parseOneExpression(
           Array.from(firstChild.childNodes),
           firstChild
         );
-        return [outputExpression(firstChild, exp), next];
+        return [outputExpression(firstChild, exp), prog.slice(1)];
       }
-      case "A": {
-        // AnchorExpression
+      case "ABBR": {
+        // AbbrExpression
         const parameters = parseExpressionList(
           Array.from(firstChild.childNodes)
         );
-        const href = firstChild.getAttribute("href");
-        if (href === null) {
-          // <a>...</a>: first expression in a is target of function call
+        const title = firstChild.getAttribute("title");
+        if (title === null) {
+          // <abbr>...</abbr>: first expression in a is target of function call
           const [target, ...rest] = parameters;
           if (target === undefined) {
             throw new SyntaxError(
@@ -93,10 +94,10 @@ function parseOneExpression(
               firstChild
             );
           }
-          return [anchorExpression(firstChild, target, rest), prog.slice(1)];
+          return [abbrExpression(firstChild, target, rest), prog.slice(1)];
         }
         // <a href="...">
-        return [anchorExpression(firstChild, href, parameters), prog.slice(1)];
+        return [abbrExpression(firstChild, title, parameters), prog.slice(1)];
       }
       case "SLOT": {
         // SlotExpression
@@ -129,13 +130,29 @@ function parseOneExpression(
       }
       case "SPAN": {
         // SpanExpression
+        const nodes = Array.from(firstChild.childNodes);
+        const child = parseExpression(nodes);
+        if (child === undefined) {
+          expectNothing(nodes);
+          // <span></span>
+          return [
+            spanExpression(firstChild, textExpression(firstChild, "")),
+            prog.slice(1),
+          ];
+        }
+        const [childExpr, rest] = child;
+        expectNothing(rest);
+        return [spanExpression(firstChild, childExpr), prog.slice(1)];
+      }
+      case "METER": {
+        // MeterExpression
         const child = parseExpression(Array.from(firstChild.childNodes));
         if (child === undefined) {
           throwExpectError("some child", firstChild);
         }
         const [childExpr, rest] = child;
         expectNothing(rest);
-        return [spanExpression(firstChild, childExpr), prog.slice(1)];
+        return [meterExpression(firstChild, childExpr), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {

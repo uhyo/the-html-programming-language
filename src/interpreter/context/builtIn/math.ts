@@ -5,6 +5,8 @@ import {
   createNativeFunctionValue,
   NativeFunctionValue,
   Value,
+  valueEquality,
+  valueToBoolean,
 } from "../../value";
 
 function valueToNumber(value: Value): number {
@@ -99,5 +101,100 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
   }),
   max: createNativeFunctionValue((args) => {
     return Math.max(...args.map(valueToNumber));
+  }),
+  eq: createNativeFunctionValue((args, node) => {
+    if (!hasNElement(2, args)) {
+      throwExpectedParameterNumberError(2, node);
+    }
+    return +valueEquality(args[0], args[1]);
+  }),
+  neq: createNativeFunctionValue((args, node) => {
+    if (!hasNElement(2, args)) {
+      throwExpectedParameterNumberError(2, node);
+    }
+    return +!valueEquality(args[0], args[1]);
+  }),
+  lt: createNativeFunctionValue((args, node) => {
+    if (!hasElement(args)) {
+      throwExpectedParameterNumberError(1, node);
+    }
+    const [first, ...rest] = args;
+    let cur = valueToNumber(first);
+    for (const v of rest) {
+      const vn = valueToNumber(v);
+      if (!(cur < vn)) {
+        return 0;
+      }
+      cur = vn;
+    }
+    return 1;
+  }),
+  gt: createNativeFunctionValue((args, node) => {
+    if (!hasElement(args)) {
+      throwExpectedParameterNumberError(1, node);
+    }
+    const [first, ...rest] = args;
+    let cur = valueToNumber(first);
+    for (const v of rest) {
+      const vn = valueToNumber(v);
+      if (!(cur > vn)) {
+        return 0;
+      }
+      cur = vn;
+    }
+    return 1;
+  }),
+  leq: createNativeFunctionValue((args, node) => {
+    if (!hasElement(args)) {
+      throwExpectedParameterNumberError(1, node);
+    }
+    const [first, ...rest] = args;
+    let cur = valueToNumber(first);
+    for (const v of rest) {
+      const vn = valueToNumber(v);
+      if (!(cur <= vn)) {
+        return 0;
+      }
+      cur = vn;
+    }
+    return 1;
+  }),
+  geq: createNativeFunctionValue((args, node) => {
+    if (!hasElement(args)) {
+      throwExpectedParameterNumberError(1, node);
+    }
+    const [first, ...rest] = args;
+    let cur = valueToNumber(first);
+    for (const v of rest) {
+      const vn = valueToNumber(v);
+      if (!(cur >= vn)) {
+        return 0;
+      }
+      cur = vn;
+    }
+    return 1;
+  }),
+  and: createNativeFunctionValue((args) => {
+    return +args.reduce((acc, v) => {
+      return acc && valueToBoolean(v);
+    }, true);
+  }),
+  or: createNativeFunctionValue((args) => {
+    return +args.reduce((acc, v) => {
+      return acc || valueToBoolean(v);
+    }, false);
+  }),
+  xor: createNativeFunctionValue((args) => {
+    return +args.reduce((acc, v) => {
+      return acc ? !valueToBoolean(v) : valueToBoolean(v);
+    }, false);
+  }),
+  implies: createNativeFunctionValue((args, node) => {
+    if (!hasElement(args)) {
+      throwExpectedParameterNumberError(1, node);
+    }
+    return +args.map(valueToBoolean).reduceRight((acc, v) => {
+      return !v || acc;
+    });
   }),
 };

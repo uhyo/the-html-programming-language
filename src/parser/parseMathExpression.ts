@@ -33,6 +33,16 @@ const builtInSet: ReadonlySet<string> = new Set<MathBuiltInType>([
   "gcd",
   "min",
   "max",
+  "eq",
+  "neq",
+  "lt",
+  "gt",
+  "leq",
+  "geq",
+  "and",
+  "or",
+  "xor",
+  "implies",
 ]);
 
 function isMathBuiltInType(value: string): value is MathBuiltInType {

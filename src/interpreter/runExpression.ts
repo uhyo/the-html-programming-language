@@ -20,6 +20,7 @@ import {
   isNativeFunctionValue,
   Value,
   valueEquality,
+  valueToNumber,
   valueToString,
 } from "./value";
 
@@ -43,11 +44,15 @@ export async function runExpression(
       }
       return strings.join("");
     }
-    case "AnchorExpression": {
+    case "AbbrExpression": {
       const targetFunc =
-        typeof expression.href === "string"
-          ? expectBinding(context.environment, expression.href, expression.node)
-          : await runExpression(expression.href, context);
+        typeof expression.title === "string"
+          ? expectBinding(
+              context.environment,
+              expression.title,
+              expression.node
+            )
+          : await runExpression(expression.title, context);
       const parameterValues = await asyncMap(expression.parameters, (exp) =>
         runExpression(exp, context)
       );
@@ -128,6 +133,9 @@ export async function runExpression(
     }
     case "SpanExpression": {
       return runExpression(expression.expression, context);
+    }
+    case "MeterExpression": {
+      return valueToNumber(await runExpression(expression.expression, context));
     }
     default: {
       assertNever(expression);
