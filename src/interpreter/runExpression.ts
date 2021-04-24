@@ -19,6 +19,7 @@ import {
   isFunctionValue,
   isNativeFunctionValue,
   Value,
+  valueEquality,
   valueToString,
 } from "./value";
 
@@ -114,6 +115,17 @@ export async function runExpression(
         );
         return returnValue;
       }
+    }
+    case "RubyExpression": {
+      const baseValue = await runExpression(expression.expression, context);
+      for (const { condition, then } of expression.branches) {
+        console.log({ condition, then });
+        const condValue = await runExpression(condition, context);
+        if (valueEquality(baseValue, condValue)) {
+          return runExpression(then, context);
+        }
+      }
+      return expression.else ? runExpression(expression.else, context) : null;
     }
     default: {
       assertNever(expression);

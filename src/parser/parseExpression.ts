@@ -4,6 +4,8 @@ import {
   Expression,
   inputExpression,
   outputExpression,
+  RubyExpression,
+  rubyExpression,
   slotExpression,
   textExpression,
   varExpression,
@@ -13,7 +15,7 @@ import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
 import { parseMathExpression } from "./parseMathExpression";
 import { skipTrivia } from "./skipTrivia";
-import { throwUnexpectedNodeError } from "./syntaxError";
+import { throwExpectError, throwUnexpectedNodeError } from "./syntaxError";
 import { isElement, isText } from "./util";
 
 export function parseExpression(
@@ -25,8 +27,8 @@ export function parseExpression(
   }
   const [expression1, rest] = res1;
   const seq: Expression[] = [expression1];
-  let nodes: Node[] = rest;
-  // if there is more expressions, generate a ConcatExpression
+  let nodes: readonly Node[] = rest;
+  // if there are more expressions, generate a ConcatExpression
   while (true) {
     const res = parseOneExpression(nodes);
     if (res === undefined) {
@@ -36,10 +38,20 @@ export function parseExpression(
     seq.push(expression);
     nodes = rest;
   }
-  if (seq.length === 1) {
-    return [expression1, rest];
+  const expr =
+    seq.length === 1 ? expression1 : concatExpression(expression1.node, seq);
+
+  nodes = skipTrivia(nodes);
+  const nextNode = nodes[0];
+  if (
+    nextNode !== undefined &&
+    isElement(nextNode) &&
+    nextNode.tagName === "RUBY"
+  ) {
+    // postfix Ruby expression
+    return [parseRubyContents(nextNode, expr), nodes.slice(1)];
   }
-  return [concatExpression(expression1.node, seq), nodes];
+  return [expr, nodes as Node[]];
 }
 
 function parseOneExpression(
@@ -123,4 +135,57 @@ function parseOneExpression(
   }
 
   return undefined;
+}
+
+function parseRubyContents(
+  container: Element,
+  baseExpression: Expression
+): RubyExpression {
+  let nodes = skipTrivia(Array.from(container.childNodes));
+  // expr-<rt> pairs
+  const branches = [];
+  while (nodes.length > 0) {
+    const condRes = parseExpression(nodes);
+    if (condRes !== undefined) {
+      const [condition, nodes1] = condRes;
+      const nodes2 = skipTrivia(nodes1);
+      const nextNode = nodes2[0];
+      if (
+        nextNode === undefined ||
+        !isElement(nextNode) ||
+        nextNode.tagName !== "RT"
+      ) {
+        throwExpectError("an rt element", nextNode ?? container);
+      }
+      const [then, nodes3] = expectExpression(
+        Array.from(nextNode.childNodes),
+        nextNode
+      );
+      expectNothing(nodes3);
+      branches.push({
+        condition,
+        then,
+      });
+      nodes = skipTrivia(nodes2.slice(1));
+    } else {
+      const nextNode = nodes[0];
+      if (
+        nextNode === undefined ||
+        !isElement(nextNode) ||
+        nextNode.tagName !== "RT"
+      ) {
+        throwExpectError(
+          "an expression or an rt element",
+          nextNode ?? container
+        );
+      }
+      const [branch, nodes2] = expectExpression(
+        Array.from(nextNode.childNodes),
+        nextNode
+      );
+      expectNothing(nodes2);
+      return rubyExpression(container, baseExpression, branches, branch);
+    }
+  }
+  return rubyExpression(container, baseExpression, branches, undefined);
 }

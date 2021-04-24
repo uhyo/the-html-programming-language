@@ -132,6 +132,38 @@ export function inputExpression(
 }
 
 /**
+ * Expression for branching
+ */
+export type RubyExpression = {
+  type: "RubyExpression";
+  expression: Expression;
+  branches: {
+    condition: Expression;
+    then: Expression;
+  }[];
+  else?: Expression;
+  node: Node;
+};
+
+export function rubyExpression(
+  node: Node,
+  expression: Expression,
+  branches: {
+    condition: Expression;
+    then: Expression;
+  }[],
+  elseExpr: Expression | undefined
+): RubyExpression {
+  return {
+    type: "RubyExpression",
+    expression,
+    branches,
+    else: elseExpr,
+    node,
+  };
+}
+
+/**
  * Expression that concats given expressions as string and return a string.
  */
 export type ConcatExpression = {
@@ -159,4 +191,5 @@ export type Expression =
   | VarExpression
   | MathBuiltInExpression
   | InputExpression
+  | RubyExpression
   | ConcatExpression;

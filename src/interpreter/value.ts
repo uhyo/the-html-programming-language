@@ -72,3 +72,15 @@ export function valueToString(value: Value): string {
     }
   }
 }
+
+export function valueEquality(left: Value, right: Value): boolean {
+  if (
+    typeof left !== "object" ||
+    typeof right !== "object" ||
+    left === null ||
+    right === null
+  ) {
+    return left === right;
+  }
+  return left === right;
+}
