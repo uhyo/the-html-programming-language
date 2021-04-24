@@ -163,6 +163,23 @@ export function rubyExpression(
   };
 }
 
+export type SpanExpression = {
+  type: "SpanExpression";
+  expression: Expression;
+  node: Node;
+};
+
+export function spanExpression(
+  node: Node,
+  expression: Expression
+): SpanExpression {
+  return {
+    type: "SpanExpression",
+    expression,
+    node,
+  };
+}
+
 /**
  * Expression that concats given expressions as string and return a string.
  */
@@ -192,4 +209,5 @@ export type Expression =
   | MathBuiltInExpression
   | InputExpression
   | RubyExpression
+  | SpanExpression
   | ConcatExpression;

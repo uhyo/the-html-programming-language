@@ -7,6 +7,7 @@ import {
   RubyExpression,
   rubyExpression,
   slotExpression,
+  spanExpression,
   textExpression,
   varExpression,
 } from "../ast/expression";
@@ -125,6 +126,16 @@ function parseOneExpression(
         const name = firstChild.getAttribute("name") ?? undefined;
         const pattern = firstChild.getAttribute("pattern") ?? undefined;
         return [inputExpression(firstChild, name, pattern), prog.slice(1)];
+      }
+      case "SPAN": {
+        // SpanExpression
+        const child = parseExpression(Array.from(firstChild.childNodes));
+        if (child === undefined) {
+          throwExpectError("some child", firstChild);
+        }
+        const [childExpr, rest] = child;
+        expectNothing(rest);
+        return [spanExpression(firstChild, childExpr), prog.slice(1)];
       }
     }
   } else if (isText(firstChild)) {

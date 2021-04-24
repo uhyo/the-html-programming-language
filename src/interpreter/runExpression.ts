@@ -119,13 +119,15 @@ export async function runExpression(
     case "RubyExpression": {
       const baseValue = await runExpression(expression.expression, context);
       for (const { condition, then } of expression.branches) {
-        console.log({ condition, then });
         const condValue = await runExpression(condition, context);
         if (valueEquality(baseValue, condValue)) {
           return runExpression(then, context);
         }
       }
       return expression.else ? runExpression(expression.else, context) : null;
+    }
+    case "SpanExpression": {
+      return runExpression(expression.expression, context);
     }
     default: {
       assertNever(expression);
