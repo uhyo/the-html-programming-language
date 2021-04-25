@@ -20,7 +20,7 @@ Example: a Hello World program
 </html>
 ```
 
-Visit [Tutorial](./docs/tutorial.md) to learn more of THPL.
+Visit [Tutorial](./docs/tutorial.md) to learn more about THPL.
 
 ## Contributing
 
