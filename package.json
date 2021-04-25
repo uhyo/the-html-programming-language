@@ -4,7 +4,7 @@
   "description": "The HTML Programming Language",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --outfile=dist/index.js",
+    "build": "esbuild src/browser.ts --minify --bundle --outfile=browser.min.js",
     "watch:tsc": "tsc --watch",
     "watch:test": "jest --watch",
     "test": "jest"
