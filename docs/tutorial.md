@@ -20,6 +20,8 @@ Every THPL program has a program header and a program footer. They are of below 
 
 Within the program header, you can specify the title of your program (between `<title>` and `</title>`). Also, modify the `@0.1.0` part to specify THPL version.
 
+Executing a THPL program is pretty easy; just open your HTML file with a browser you like. Output from your program should be shown in the page.
+
 ## P Statement and Expressions
 
 Your program is placed between `<body>` and `</body>`. A program is a sequence of **statements**. The most basic statement is the **P statement**. A P statement contains an **expression** in it. When a P statement is to be executed, the expression in it is executed.
