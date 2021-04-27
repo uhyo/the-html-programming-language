@@ -6,13 +6,13 @@ import { mathBuiltIns } from "./context/builtIn/math";
 import {
   expectBinding,
   expectSlot,
-  updateBinding,
+  updateBinding
 } from "./context/environment";
 import { InterpreterContext } from "./context/index";
 import { runFunctionBlock } from "./runBlock";
 import {
   throwTypeMismatchError,
-  throwUnexpectedEndOfInputError,
+  throwUnexpectedEndOfInputError
 } from "./runtimeError";
 import {
   FunctionValue,
@@ -21,7 +21,7 @@ import {
   Value,
   valueEquality,
   valueToNumber,
-  valueToString,
+  valueToString
 } from "./value";
 
 export async function runExpression(
@@ -70,6 +70,26 @@ export async function runExpression(
           expression.node
         );
         return returnValue;
+      }
+      throwTypeMismatchError("function", targetFunc, expression.node);
+    }
+    case "QExpression": {
+      const targetFunc = expression.cite;
+      const parameterValues = await asyncMap(expression.parameters, (exp) =>
+        runExpression(exp, context)
+      );
+      console.log("targetFunc", targetFunc)
+      if (targetFunc == "string/charCodeAt") {
+        const args = parameterValues;
+        if (args.length < 2) {
+          return -1;
+        }
+        const s = valueToString(args[0] || "");
+        const n = valueToNumber(args[1] || -1);
+        if (n < 0 || n >= s.length) {
+          return -1;
+        }
+        return s.charCodeAt(n);
       }
       throwTypeMismatchError("function", targetFunc, expression.node);
     }
