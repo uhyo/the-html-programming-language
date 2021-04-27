@@ -78,7 +78,6 @@ export async function runExpression(
       const parameterValues = await asyncMap(expression.parameters, (exp) =>
         runExpression(exp, context)
       );
-      console.log("targetFunc", targetFunc)
       if (targetFunc == "string/charCodeAt") {
         const args = parameterValues;
         if (args.length < 2) {
