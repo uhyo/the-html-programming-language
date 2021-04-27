@@ -4,7 +4,7 @@ import {
   MathBuiltInType
 } from "../ast/expression";
 import { skipTrivia } from "./skipTrivia";
-import { throwExpectError } from "./syntaxError";
+import { throwExpectError } from "./SyntaxError";
 import { isElement } from "./util";
 
 export function parseMathExpression(element: Element): MathBuiltInExpression {
@@ -43,7 +43,6 @@ const builtInSet: ReadonlySet<string> = new Set<MathBuiltInType>([
   "or",
   "xor",
   "implies",
-  "charcodeat",
 ]);
 
 function isMathBuiltInType(value: string): value is MathBuiltInType {

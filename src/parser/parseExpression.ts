@@ -23,7 +23,7 @@ import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
 import { parseMathExpression } from "./parseMathExpression";
 import { skipTrivia } from "./skipTrivia";
-import { throwExpectError, throwUnexpectedNodeError } from "./syntaxError";
+import { throwExpectError, throwUnexpectedNodeError } from "./SyntaxError";
 import { isElement, isText } from "./util";
 
 export function parseExpression(
