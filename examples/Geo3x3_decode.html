@@ -1,0 +1,121 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Geo3x3_decode in THPL</title>
+<script src="../browser.min.js"></script>
+</head>
+<body>
+
+<section title="floor">
+  <footer>
+    <abbr><math><minus/></math><br>
+      <slot></slot><br>
+      <abbr><math><rem/></math><br><slot></slot><br>1</abbr>
+    </abbr>
+  </footer>
+</section>
+
+<section title="decode_loop">
+  <dl>
+    <dt>code</dt><dd><slot name="0"></slot></dd>
+    <dt>lat</dt><dd><slot name="1"></slot></dd>
+    <dt>lng</dt><dd><slot name="2"></slot></dd>
+    <dt>level</dt><dd><slot name="3"></slot></dd>
+    <dt>unit</dt><dd><slot name="4"></slot></dd>
+    <dt>dlng</dt><dd><slot name="5"></slot></dd>
+  </dl>
+  <dl>
+    <dt>n</dt>
+      <dd>
+        <abbr><math><minus/></math><br>
+          <abbr><math><charCodeAt/></math><br><var>code</var><br><var>level</var></abbr><br>
+          <abbr><math><charCodeAt/></math><br>1<br>0</abbr>
+        </abbr>
+      </dd>
+    </dl>
+  <p>
+    <var>n</var>
+    <ruby>
+      <meter>-50</meter>
+      <rt>
+        <output>
+          <abbr><math><minus/></math><br>
+            <abbr><math><plus/></math><br>
+              <var>lat</var><br>
+              <abbr><math><divide/></math><br>
+                <abbr><math><times/></math><br>
+                  <var>unit</var><br>
+                  <meter>3</meter>
+                </abbr>
+                <meter>2</meter>
+              </abbr>
+            </abbr><br>
+            <meter>90</meter>
+          </abbr>, <abbr><math><minus/></math><br>
+            <abbr><math><plus/></math><br>
+              <var>lng</var><br>
+              <abbr><math><divide/></math><br>
+                <abbr><math><times/></math><br>
+                  <var>unit</var><br>
+                  <meter>3</meter>
+                </abbr>
+                <meter>2</meter>
+              </abbr>
+            </abbr><br>
+            <var>dlng</var>
+          </abbr>, <var>level</var>, <abbr><math><times/></math><br><var>unit</var><br>3</abbr><wbr></output>
+      </rt>
+      <rt>
+        <abbr title="decode_loop">
+          <var>code</var><br>
+          <abbr><math><plus/></math><br>
+            <var>lat</var><br>
+            <abbr><math><times/></math><br>
+              <abbr title="floor">
+                <abbr><math><divide/></math><br>
+                  <var>n</var><br>
+                  <meter>3</meter>
+                </abbr>
+              </abbr><br>
+              <var>unit</var>
+            </abbr>
+          </abbr><br>
+          <abbr><math><plus/></math><br>
+            <var>lng</var><br>
+            <abbr><math><times/></math><br>
+              <abbr><math><rem/></math><br>
+                <var>n</var><br>
+                <meter>3</meter>
+              </abbr><br>
+              <var>unit</var>
+            </abbr>
+          </abbr><br>
+          <abbr><math><plus/></math><br>
+            <var>level</var><br>
+            <meter>1</meter>
+          </abbr><br>
+          <abbr><math><divide/></math><br>
+            <var>unit</var><br>
+            <meter>3</meter>
+          </abbr><br>
+          <var>dlng</var>
+        </abbr>
+      </rt>
+    </ruby>
+  </p>
+</section>
+
+<section title="decode">
+  <dl>
+    <dt>code</dt><dd><slot name="0"></slot></dd>
+  </dl>
+  <dl>
+    <dt>dlng</dt><dd><abbr><math><charCodeAt/></math><br><var>code</var><br>0</abbr><ruby>
+      <meter>87</meter><rt>180</rt><rt>0</rt></ruby></dd>
+  </dl>
+  <p><abbr title="decode_loop"><var>code</var><br>0<br>0<br>1<br>60<br><var>dlng</var></abbr></p>
+</section>
+
+<p><abbr title="decode">E9139659937288</abbr></p>
+<p><abbr title="decode">W7317457719288</abbr></p>
+
+</body>
+</html>
