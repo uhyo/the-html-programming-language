@@ -110,9 +110,7 @@ function parseOneExpression(
         const parameters = parseExpressionList(
           Array.from(firstChild.childNodes)
         );
-        console.log("q", parameters);
         const cite = firstChild.getAttribute("cite");
-        console.log("cite", cite);
         if (cite === null) {
           // <q>...</q>: first expression in a is target of function call
           const [target, ...rest] = parameters;
