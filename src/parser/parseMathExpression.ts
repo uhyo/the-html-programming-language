@@ -1,7 +1,7 @@
 import {
   mathBuiltInExpression,
   MathBuiltInExpression,
-  MathBuiltInType,
+  MathBuiltInType
 } from "../ast/expression";
 import { skipTrivia } from "./skipTrivia";
 import { throwExpectError } from "./syntaxError";
@@ -43,6 +43,7 @@ const builtInSet: ReadonlySet<string> = new Set<MathBuiltInType>([
   "or",
   "xor",
   "implies",
+  "charcodeat",
 ]);
 
 function isMathBuiltInType(value: string): value is MathBuiltInType {

@@ -6,7 +6,7 @@ import {
   NativeFunctionValue,
   Value,
   valueEquality,
-  valueToBoolean,
+  valueToBoolean
 } from "../../value";
 
 function valueToNumber(value: Value): number {
@@ -196,5 +196,16 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
     return +args.map(valueToBoolean).reduceRight((acc, v) => {
       return !v || acc;
     });
+  }),
+  charcodeat: createNativeFunctionValue((args) => {
+    if (args.length < 2) {
+      return -1;
+    }
+    const s = args[0];
+    const n = valueToNumber(args[1]);
+    if (n < 0 || n >= s.length) {
+      return -1;
+    }
+    return s.charCodeAt(n);
   }),
 };

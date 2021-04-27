@@ -101,7 +101,9 @@ export type MathBuiltInType =
   | "and"
   | "or"
   | "xor"
-  | "implies";
+  | "implies"
+  // string
+  | "charcodeat";
 
 /**
  * Expression that represents a built-in math function.

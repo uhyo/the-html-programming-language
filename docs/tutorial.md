@@ -160,7 +160,7 @@ Example:
 </p>
 ```
 
-The math namespace provides following functions: `add`, `minus`, `times`, `divide`, `power`, `rem`, `gcd`, `min`, `max`, `lt`, `gt`, `leq`, `geq`, `and`, `or`, `xor` and `implies`.
+The math namespace provides following functions: `add`, `minus`, `times`, `divide`, `power`, `rem`, `gcd`, `min`, `max`, `lt`, `gt`, `leq`, `geq`, `and`, `or`, `xor`, `implies` and `charCodeAt`.
 
 Returned values of all math functions are numbers. For boolean operations, `1` is returned for true and `0` is returned for false.
 
