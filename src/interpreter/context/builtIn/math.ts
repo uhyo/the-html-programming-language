@@ -197,15 +197,4 @@ export const mathBuiltIns: Record<MathBuiltInType, NativeFunctionValue> = {
       return !v || acc;
     });
   }),
-  charcodeat: createNativeFunctionValue((args) => {
-    if (args.length < 2) {
-      return -1;
-    }
-    const s = args[0];
-    const n = valueToNumber(args[1]);
-    if (n < 0 || n >= s.length) {
-      return -1;
-    }
-    return s.charCodeAt(n);
-  }),
 };
