@@ -6,7 +6,7 @@ import {
   NativeFunctionValue,
   Value,
   valueEquality,
-  valueToBoolean,
+  valueToBoolean
 } from "../../value";
 
 function valueToNumber(value: Value): number {

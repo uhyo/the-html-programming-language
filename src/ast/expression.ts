@@ -35,6 +35,26 @@ export function abbrExpression(
   };
 }
 
+export type QExpression = {
+  type: "QExpression";
+  cite: string;
+  parameters: readonly Expression[];
+  node: Node;
+};
+
+export function qExpression(
+  node: Node,
+  cite: string,
+  parameters: readonly Expression[]
+): QExpression {
+  return {
+    type: "QExpression",
+    cite,
+    parameters,
+    node,
+  };
+}
+
 export type TextExpression = {
   type: "TextExpression";
   text: string;
@@ -102,7 +122,6 @@ export type MathBuiltInType =
   | "or"
   | "xor"
   | "implies";
-
 /**
  * Expression that represents a built-in math function.
  */
@@ -232,6 +251,7 @@ export function concatExpression(
 export type Expression =
   | OutputExpression
   | AbbrExpression
+  | QExpression
   | TextExpression
   | SlotExpression
   | VarExpression

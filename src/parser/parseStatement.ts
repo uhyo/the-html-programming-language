@@ -4,13 +4,13 @@ import {
   expressionStatement,
   footerStatement,
   sectionDeclaration,
-  Statement,
+  Statement
 } from "../ast/statement";
 import { expectAttribute, expectExpression, expectNothing } from "./expect";
 import { parseExpression } from "./parseExpression";
 import { parseStatementList } from "./parseStatementList";
 import { skipTrivia } from "./skipTrivia";
-import { throwExpectError, throwUnexpectedNodeError } from "./syntaxError";
+import { throwExpectError, throwUnexpectedNodeError } from "./SyntaxError";
 import { isElement } from "./util";
 
 export function parseStatement(

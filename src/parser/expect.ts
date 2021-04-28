@@ -4,8 +4,8 @@ import { skipTrivia } from "./skipTrivia";
 import {
   throwExpectAttributeError,
   throwExpectError,
-  throwUnexpectedNodeError,
-} from "./syntaxError";
+  throwUnexpectedNodeError
+} from "./SyntaxError";
 import { hasElement } from "./util";
 
 export function expectExpression(

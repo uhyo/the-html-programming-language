@@ -1,23 +1,29 @@
 import {
   abbrExpression,
+
   concatExpression,
   Expression,
   inputExpression,
   meterExpression,
-  outputExpression,
+  outputExpression, qExpression,
+
+
+
+
+
   RubyExpression,
   rubyExpression,
   slotExpression,
   spanExpression,
   textExpression,
-  varExpression,
+  varExpression
 } from "../ast/expression";
 import { SyntaxError } from "../errorObject";
 import { expectExpression, expectNothing } from "./expect";
 import { parseExpressionList } from "./parseExpressionList";
 import { parseMathExpression } from "./parseMathExpression";
 import { skipTrivia } from "./skipTrivia";
-import { throwExpectError, throwUnexpectedNodeError } from "./syntaxError";
+import { throwExpectError, throwUnexpectedNodeError } from "./SyntaxError";
 import { isElement, isText } from "./util";
 
 export function parseExpression(
@@ -98,6 +104,26 @@ function parseOneExpression(
         }
         // <a href="...">
         return [abbrExpression(firstChild, title, parameters), prog.slice(1)];
+      }
+      case "Q": {
+        // QExpression
+        const parameters = parseExpressionList(
+          Array.from(firstChild.childNodes)
+        );
+        const cite = firstChild.getAttribute("cite");
+        if (cite === null) {
+          // <q>...</q>: first expression in a is target of function call
+          const [target, ...rest] = parameters;
+          if (target === undefined) {
+            throw new SyntaxError(
+              "Expected at least one expressions as children",
+              firstChild
+            );
+          }
+          return [qExpression(firstChild, target, rest), prog.slice(1)];
+        }
+        // <q cite="...">
+        return [qExpression(firstChild, cite, parameters), prog.slice(1)];
       }
       case "SLOT": {
         // SlotExpression
